@@ -90,15 +90,19 @@ AC_SUBST([CXXCPP_FINGER_PRINT])
 dnl Generate src/sys.h from src/sys.h.in
 CW_CONFIG_FILE([src], [sys.h])
 
+dnl Generate src/tests/sys.h from src/tests/sys.h.in
+CW_CONFIG_FILE([src/tests], [sys.h])
+
 dnl Output the other configuration files.
 AC_CONFIG_FILES(
-        [Makefile]
-        [src/Makefile]
+	[Makefile]
+	[src/Makefile]
 	[src/include/Makefile]
 	[src/include/libgaloisfield/Makefile]
+	[src/tests/Makefile]
 	[libgaloisfield.pc]
-        [doc/Makefile]
-        [doc/doxygen.config]
+	[doc/Makefile]
+	[doc/doxygen.config]
 	[doc/html.header]
 	[doc/html.footer])
 

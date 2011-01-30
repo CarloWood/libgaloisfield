@@ -23,6 +23,7 @@
 #include <map>
 #include <queue>
 #include <set>
+#include <bitset>
 #include <sstream>
 #include <stack>
 #include <stdexcept>

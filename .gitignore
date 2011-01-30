@@ -1,0 +1,14 @@
+stamp-h.in
+mkinstalldirs
+missing
+depcomp
+ltmain.sh
+install-sh
+configure
+config.sub
+config.h.in
+config.guess
+autom4te.cache
+aclocal.m4
+Makefile.in
+Makefile

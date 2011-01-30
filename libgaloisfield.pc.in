@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libgaloisfield
+Description: A small C++ library to play with finite fields.
+Version: @VERSION@
+Libs: -L${libdir} -lgaloisfield
+Cflags: @PCCFLAGS@ -I${includedir}

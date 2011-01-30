@@ -1,0 +1,54 @@
+#define USE_PCH
+#include "sys.h"
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <regex.h>
+#include <cassert>
+#include <cctype>
+#include <climits>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <iomanip>
+#include <iosfwd>
+#include <iostream>
+#include <iterator>
+#include <limits>
+#include <map>
+#include <queue>
+#include <set>
+#include <sstream>
+#include <stack>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#ifdef USE_LIBBOOST
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/optional/optional.hpp>
+#endif
+#include "debug.h"
+#ifdef CWDEBUG
+#include <libcwd/buf2str.h>
+#include <libcwd/cwprint.h>
+#endif
+#ifdef USE_LIBCW
+#include <libcw/dbstreambuf.h>
+#include <libcw/eomf.h>
+#include <libcw/events.h>
+#include <libcw/libcw_app.h>
+#include <libcw/listen_sock.h>
+#include <libcw/memleak.h>
+#include <libcw/sock.h>
+#include <libcw/support.h>
+#include <libcw/traits.h>
+#include <libcw/timing.h>
+#endif
+

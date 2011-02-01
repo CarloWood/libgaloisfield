@@ -28,13 +28,133 @@
 #include <bitset>
 #endif
 
+#include "libgaloisfield/bithacks.h"
+#include "config.h"
+
+extern unsigned long irreducible_bits[max_degree];
+
 template<unsigned int max_degree>
 class PolynomialOverZ2 {
   private:
+    int M_degree;				// Or -1 when zero.
     std::bitset<max_degree> M_coefficients;
 
   public:
-    PolynomialOverZ2(void) { }
+    // Construct a polynomial over Z_2 and set it to 0.
+    PolynomialOverZ2(void) : M_degree(-1) { }
+    // Construct an arbitrary polynomial over Z_2.
+    explicit PolynomialOverZ2(unsigned long bits) : M_coefficients(bits) { M_degree = bits ? log2(bits) : -1; }
+    // Construct an irreducible polynomial over Z_2 of degree `degree'.
+    PolynomialOverZ2(int degree) : M_degree(degree), M_coefficients(irreducible_bits[degree]) { }
+
+    void square(void);
+
+    std::bitset<max_degree> const& as_bitset(void) const { return M_coefficients; }
+
+    bool is_zero(void) const { return M_degree == -1; }
+    int degree(void) const { return M_degree; }
+
+    PolynomialOverZ2& operator+=(PolynomialOverZ2 const& pol);
+    template<unsigned int md> friend PolynomialOverZ2<md> operator+(PolynomialOverZ2<md> const& pol1, PolynomialOverZ2<md> const& pol2) { PolynomialOverZ2 tmp(pol1); tmp += pol2; return tmp; }
+
+    PolynomialOverZ2& operator*=(PolynomialOverZ2 const& pol) { if (&pol == this) { square(); return *this; } PolynomialOverZ2 tmp(*this * pol); return *this = tmp; }
+    template<unsigned int md> friend PolynomialOverZ2<md> operator*(PolynomialOverZ2<md> const& pol1, PolynomialOverZ2<md> const& pol2);
+
+    PolynomialOverZ2& operator-=(PolynomialOverZ2 const& pol) { return operator+=(pol); }
+    template<unsigned int md> friend PolynomialOverZ2<md> operator-(PolynomialOverZ2<md> const& pol1, PolynomialOverZ2<md> const& pol2) { return pol1 + pol2; }
+
+    PolynomialOverZ2& operator%=(PolynomialOverZ2 const& pol);
+
+    template<unsigned int md> friend PolynomialOverZ2<md> gcd(PolynomialOverZ2<md> const& pol1, PolynomialOverZ2<md> const& pol2);
 };
+
+template<unsigned int max_degree>
+PolynomialOverZ2<max_degree>& PolynomialOverZ2<max_degree>::operator+=(PolynomialOverZ2<max_degree> const& pol)
+{
+  M_coefficients ^= pol.M_coefficients;
+  if (M_degree < pol.M_degree)
+    M_degree = pol.M_degree;
+  else if (M_degree == pol.M_degree)
+    while(--M_degree >= 0 && !M_coefficients[M_degree]);
+  return *this;
+}
+
+template<unsigned int max_degree>
+PolynomialOverZ2<max_degree> operator*(PolynomialOverZ2<max_degree> const& pol1, PolynomialOverZ2<max_degree> const& pol2)
+{
+  PolynomialOverZ2<max_degree> result;
+  if (pol1.M_degree >= 0 && pol2.M_degree >= 0)
+  {
+    result.M_degree = pol1.M_degree + pol2.M_degree;
+    assert(result.M_degree < max_degree);
+    for (int d = 0; d <= pol1.M_degree; ++d)
+      if (pol1.M_coefficients[d])
+	result.M_coefficients ^= pol2.M_coefficients << d;
+  }
+  return result;
+}
+
+template<unsigned int max_degree>
+void PolynomialOverZ2<max_degree>::square(void)
+{
+  if (M_degree <= 1)
+  {
+    if (M_degree == 1)
+    {
+      M_coefficients.set(2);
+      M_coefficients.reset(1);
+    }
+    return;
+  }
+  int d = M_degree;
+  M_degree *= 2;
+  assert(M_degree < max_degree);
+  int dd = M_degree;
+  M_coefficients.set(dd);
+  while(--d >= 0)
+  {
+    M_coefficients.set(--dd, false);
+    M_coefficients.set(--dd, M_coefficients[d]);
+  }
+}
+
+template<unsigned int max_degree>
+PolynomialOverZ2<max_degree>& PolynomialOverZ2<max_degree>::operator%=(PolynomialOverZ2<max_degree> const& pol)
+{
+  assert(pol.M_degree >= 0);
+  int shift = M_degree - pol.M_degree;
+  if (shift < 0)
+    return *this;
+  std::bitset<max_degree> tmp(pol.as_bitset());
+  tmp <<= shift;
+  for(;;)
+  {
+    M_coefficients ^= tmp;
+    while(--M_degree >= 0 && !M_coefficients[M_degree]);
+    int newshift = M_degree - pol.M_degree;
+    if (newshift < 0)
+      break;
+    tmp >>= shift - newshift;
+    shift = newshift;
+  }
+  return *this;
+}
+
+template<unsigned int md>
+PolynomialOverZ2<md> gcd(PolynomialOverZ2<md> const& pol1, PolynomialOverZ2<md> const& pol2)
+{
+  PolynomialOverZ2<md> tmp1(pol1);
+  PolynomialOverZ2<md> tmp2(pol2);
+  PolynomialOverZ2<md>* x = &tmp1;
+  PolynomialOverZ2<md>* y = &tmp2;
+  do
+  {
+    if (x->M_degree > y->M_degree)
+      std::swap(x ,y);
+    *y %= *x;
+  }
+  while (!y->is_zero());
+  return *x;
+}
 
 #endif	// POLYNOMIALOVERZ2_H

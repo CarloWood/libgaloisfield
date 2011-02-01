@@ -1,6 +1,6 @@
 // libgaloisfield -- A small C++ library to play with finite fields.
 //
-//! @file config.h General configurations.
+//! @file bithacks.h Bit fiddling utilities.
 //
 // Copyright (C) 2011, by
 // 
@@ -21,14 +21,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef BITHACKS_H
+#define BITHACKS_H
 
-unsigned int const max_degree = 64;
+#ifndef USE_PCH
+#include <endian.h>
+#endif
 
-template<unsigned int max_degree> class PolynomialOverZ2;
-typedef PolynomialOverZ2<max_degree> polynomial_type;
+// Convert the size of a linked list to it's 'size class':
+// this function returns log2(val) - 1.
+// See http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogIEEE64Float for the used magic.
+inline unsigned int log2(uint32_t val)
+{
+  union { uint32_t u[2]; double d; } t;
+  t.u[__FLOAT_WORD_ORDER == __LITTLE_ENDIAN] = 0x43300000;
+  t.u[__FLOAT_WORD_ORDER != __LITTLE_ENDIAN] = val;
+  t.d -= 4503599627370496.0;
+  return (t.u[__FLOAT_WORD_ORDER == __LITTLE_ENDIAN] >> 20) - 0x3ff;
+}
 
-#include "PolynomialOverZ2.h"
+inline unsigned int log2(uint64_t val)
+{
+  union { uint32_t u[2]; uint64_t v; } t;
+  t.v = val;
+  return t.u[__BYTE_ORDER == __LITTLE_ENDIAN] ? log2(t.u[__BYTE_ORDER == __LITTLE_ENDIAN]) + 32 : log2(t.u[__BYTE_ORDER != __LITTLE_ENDIAN]);
+}
 
-#endif // CONFIG_H
+#endif // BITHACKS_H

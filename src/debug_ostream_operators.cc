@@ -27,6 +27,9 @@
                         // to force recompilation after the configuration changed.
 #endif
 
+#include "libgaloisfield/config.h"
+#include "libgaloisfield/PolynomialOverZ2.h"
+
 #ifdef CWDEBUG
 
 #ifndef USE_PCH
@@ -43,3 +46,29 @@ std::ostream& operator<<(std::ostream& os, timeval const& time)
 }
 
 #endif // CWDEBUG
+
+std::ostream& operator<<(std::ostream& os, PolynomialOverZ2<max_degree> const& polynomial)
+{
+  if (polynomial.is_zero())
+    return os << "0";
+  std::bitset<max_degree> const& bits = polynomial.as_bitset();
+  bool first = true;
+  for (int d = polynomial.degree(); d >= 0; --d)
+  {
+    if (bits[d])
+    {
+      if (first)
+	first = false;
+      else
+	os << " + ";
+      if (d == 0)
+	os << "1";
+      else if (d == 1)
+	os << "x";
+      else
+	os << "x^" << d;
+    }
+  }
+  return os;
+}
+

@@ -14,6 +14,7 @@ DEFS = @DEFS@
 CXXFLAGS =
 
 libgaloisfield_la_SOURCES = \
+	PolynomialOverZ2.cc \
 	debug_ostream_operators.h \
 	debug_ostream_operators.cc \
 	debug.h \

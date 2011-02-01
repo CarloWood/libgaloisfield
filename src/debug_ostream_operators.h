@@ -25,11 +25,14 @@
 #ifndef DEBUG_OSTREAM_OPERATORS_H
 #define DEBUG_OSTREAM_OPERATORS_H
 
+#ifndef USE_PCH
+#include <iosfwd>                       // std::ostream&
+#endif
+
 #ifdef CWDEBUG
 
 #ifndef USE_PCH
 #include <sys/time.h>
-#include <iosfwd>                       // std::ostream&
 #include <utility>                      // std::pair
 #include <map>
 #include <boost/shared_ptr.hpp>         // boost::shared_ptr
@@ -82,4 +85,8 @@ std::ostream& operator<<(std::ostream& os, std::map<T1, T2, T3> const& data)
 }
 
 #endif // CWDEBUG
+
+template<unsigned int max_degree> class PolynomialOverZ2;
+std::ostream& operator<<(std::ostream& os, PolynomialOverZ2<max_degree> const& polynomial);
+
 #endif // DEBUG_OSTREAM_OPERATORS_H

@@ -3,28 +3,28 @@
 AUTOMAKE_OPTIONS = foreign
 
 EXTRA_PROGRAMS = \
-	hello_world
+	polynomial_gcd
 
 CLEANFILES = $(EXTRA_PROGRAMS)
 
 LIBS= @LIBS@ @CWD_LIBS@
 BUILT_SOURCES =
 
-hello_world_SOURCES = hello_world.cc
-hello_world_DEPENDENCIES = $(DEPENDENCIES)
+polynomial_gcd_SOURCES = polynomial_gcd.cc
+polynomial_gcd_DEPENDENCIES = $(DEPENDENCIES)
 
 #threads_CXXFLAGS = -D_REENTRANT -DLIBCWD_THREAD_SAFE @CXXFLAGS@
 #threads_SOURCES = threads.cc
 #threads_LDADD = ../libcwd_r.la
 
-#noinst_HEADERS = sys.h debug.h sys.h syslog_debug.h threads_debug.h initbug_GlobalObject.h hello_world_debug.h
+#noinst_HEADERS = sys.h debug.h sys.h syslog_debug.h threads_debug.h initbug_GlobalObject.h
 
 LDADD = ../libgaloisfield.la
 full_top_builddir := $(shell (cd $(top_builddir); pwd))
 LDFLAGS = -Wl,-rpath -Wl,$(full_top_builddir)/.libs
 
 CXXFLAGS = -g @CWD_FLAGS@
-INCLUDES = -I. -I$(top_builddir)/include -I$(srcdir)/../include -I$(top_builddir)
+INCLUDES = -I. -I$(top_builddir)/src/include -I$(srcdir)/../include -I$(srcdir)/.. -I$(top_builddir)
 DEFAULT_INCLUDES =
 
 if USE_PCH

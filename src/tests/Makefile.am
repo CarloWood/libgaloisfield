@@ -3,7 +3,8 @@
 AUTOMAKE_OPTIONS = foreign
 
 EXTRA_PROGRAMS = \
-	polynomial_gcd
+	polynomial_gcd \
+	prime_generator
 
 CLEANFILES = $(EXTRA_PROGRAMS)
 
@@ -12,6 +13,9 @@ BUILT_SOURCES =
 
 polynomial_gcd_SOURCES = polynomial_gcd.cc
 polynomial_gcd_DEPENDENCIES = $(DEPENDENCIES)
+
+prime_generator_SOURCES = prime_generator.cc
+prime_generator_DEPENDENCIES = $(DEPENDENCIES)
 
 #threads_CXXFLAGS = -D_REENTRANT -DLIBCWD_THREAD_SAFE @CXXFLAGS@
 #threads_SOURCES = threads.cc

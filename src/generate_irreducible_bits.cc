@@ -13,7 +13,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-// This file generates the table of PolynomialOverZ2.cc.
+// This file generates the table of irreducible_bits.cc.
 
 struct poly {
   unsigned int m;
@@ -121,20 +121,17 @@ int main(int argc, char* argv[])
   {
     if (iter->m != next)
     {
-      cout << "Unexpected: " << iter->m << endl;
+      cerr << "Unexpected: " << iter->m << endl;
       exit(1);
     }
     ++next;
   }
   assert(mk.size() == 9999);
  
-  std::ofstream output;
-  output.open("PolynomialOverZ2.cc");
-
-  output <<
+  cout <<
 "// libgaloisfield -- A small C++ library to play with finite fields.\n"
 "//\n"
-"//! @file PolynomialOverZ2.cc Table with irreducible polynomials over Z_2.\n"
+"//! @file irreducible_bits.cc Table with irreducible polynomials over Z_2.\n"
 "//\n"
 "// Copyright (C) 2011, by\n"
 "//\n"
@@ -155,7 +152,9 @@ int main(int argc, char* argv[])
 "// You should have received a copy of the GNU General Public License\n"
 "// along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
 "\n"
-"unsigned long irreducible_bits[max_degree] = {\n\t0x1,\n\t0x3,\n";
+"#include <libgaloisfield/config.h>\n"
+"\n"
+"unsigned long irreducible_bits[max_degree] = {\n\t0x1UL,\n\t0x3UL,\n";
 
   int count = 2;
   for (std::vector<poly>::iterator iter = mk.begin(); iter != mk.end(); ++iter)
@@ -168,14 +167,13 @@ int main(int argc, char* argv[])
       val |= 1UL << iter->k2;
     }
     val |= 1UL;
-    output << "\t0x" << std::hex << val;
+    cout << "\t0x" << std::hex << val << "UL";
     if (++count == max_degree)
       break;
-    output << ",\n";
+    cout << ",\n";
   }
 
-  output << "\n};\n";
-  output.close();
+  cout << "\n};\n";
 
   return 0;
 }

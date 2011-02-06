@@ -29,6 +29,7 @@
 
 #include "libgaloisfield/config.h"
 #include "libgaloisfield/PolynomialOverZ2.h"
+#include "libgaloisfield/GFElement.h"
 
 #ifdef CWDEBUG
 
@@ -64,11 +65,17 @@ std::ostream& operator<<(std::ostream& os, PolynomialOverZ2<max_degree> const& p
       if (d == 0)
 	os << "1";
       else if (d == 1)
-	os << "x";
+	os << "t";
       else
-	os << "x^" << d;
+	os << "t^" << d;
     }
   }
+  return os;
+}
+
+std::ostream& operator<<(std::ostream& os, GFElement const& field_element)
+{
+  os << field_element.as_polynomial();
   return os;
 }
 

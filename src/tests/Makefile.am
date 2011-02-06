@@ -4,7 +4,11 @@ AUTOMAKE_OPTIONS = foreign
 
 EXTRA_PROGRAMS = \
 	polynomial_gcd \
-	prime_generator
+	prime_generator \
+	field_basics \
+	field_order \
+	field_frobenius \
+	field_generator
 
 CLEANFILES = $(EXTRA_PROGRAMS)
 
@@ -17,6 +21,18 @@ polynomial_gcd_DEPENDENCIES = $(DEPENDENCIES)
 prime_generator_SOURCES = prime_generator.cc
 prime_generator_DEPENDENCIES = $(DEPENDENCIES)
 
+field_basics_SOURCES = field_basics.cc
+field_basics_DEPENDENCIES = $(DEPENDENCIES)
+
+field_order_SOURCES = field_order.cc
+field_order_DEPENDENCIES = $(DEPENDENCIES)
+
+field_frobenius_SOURCES = field_frobenius.cc
+field_frobenius_DEPENDENCIES = $(DEPENDENCIES)
+
+field_generator_SOURCES = field_generator.cc
+field_generator_DEPENDENCIES = $(DEPENDENCIES)
+
 #threads_CXXFLAGS = -D_REENTRANT -DLIBCWD_THREAD_SAFE @CXXFLAGS@
 #threads_SOURCES = threads.cc
 #threads_LDADD = ../libcwd_r.la
@@ -27,7 +43,7 @@ LDADD = ../libgaloisfield.la
 full_top_builddir := $(shell (cd $(top_builddir); pwd))
 LDFLAGS = -Wl,-rpath -Wl,$(full_top_builddir)/.libs
 
-CXXFLAGS = -g @CWD_FLAGS@
+CXXFLAGS = @CXXFLAGS@ @CWD_FLAGS@
 INCLUDES = -I. -I$(top_builddir)/src/include -I$(srcdir)/../include -I$(srcdir)/.. -I$(top_builddir)
 DEFAULT_INCLUDES =
 
@@ -66,6 +82,7 @@ endif
 all: $(EXTRA_PROGRAMS)
 
 clean-local:
+	rm -f core
 if USE_PCH
 	rm -f pch.h.gch/* $(DEPDIR)/pch.*po
 endif

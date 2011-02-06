@@ -23,6 +23,7 @@
 
 #ifndef USE_PCH
 #include "sys.h"
+#include <bitset>
 #endif
 
 #include "libgaloisfield/Prime.h"

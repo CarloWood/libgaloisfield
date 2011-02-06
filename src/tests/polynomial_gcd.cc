@@ -20,4 +20,7 @@ int main()
   std::cout << "c * y             = " << cy << std::endl;
   std::cout << "gcd(c * x, c * y) = " << q << std::endl;
   std::cout << "c * gcd(x, y)     = " << r << std::endl;
+
+  assert(q == r);
+  std::cout << "Success!\n";
 }

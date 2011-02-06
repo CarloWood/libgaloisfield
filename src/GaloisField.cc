@@ -1,6 +1,6 @@
 // libgaloisfield -- A small C++ library to play with finite fields.
 //
-//! @file Prime.h This file contains the declaration of class Prime.
+//! @file GaloisField.cc This file contains the implementation of class GaloisField.
 //
 // Copyright (C) 2011, by
 // 
@@ -21,35 +21,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PRIME_H
-#define PRIME_H
-
 #ifndef USE_PCH
-#include <vector>
+#include "sys.h"
 #endif
 
-typedef unsigned long prime_t;
+#include "libgaloisfield/GaloisField.h"
 
-class Prime {
-  public:
-    static std::vector<prime_t> S_primes;
-    unsigned int M_index;
-  
-  public:
-    Prime(void) : M_index(0) { if (S_primes.empty()) S_primes.push_back(2); }
-    Prime(Prime const& p) : M_index(p.M_index) { }
-    Prime(unsigned int index) : M_index(index) { generate(M_index); }
+GaloisField::S_fields_type GaloisField::S_fields;
 
-    unsigned long as_ulong(void) const { return S_primes[M_index]; }
-    operator prime_t() const { return S_primes[M_index]; }
+GaloisField const& GaloisField::get(polynomial_type const& modulo)
+{
+  S_fields_type::iterator iter = S_fields.find(modulo);
+  if (iter == S_fields.end())
+    iter = S_fields.insert(S_fields_type::value_type(modulo, GaloisField(modulo))).first;
+  return iter->second;
+}
 
-    Prime& operator++(void) { ++M_index; generate(M_index); return *this; }
-    Prime operator++(int) { generate(M_index + 1); return Prime(M_index++); }
-    Prime& operator--(void) { --M_index; return *this; }
-    Prime operator--(int) { return Prime(M_index--); }
-
-  private:
-    void generate(unsigned int index);
-};
-
-#endif	// PRIME_H

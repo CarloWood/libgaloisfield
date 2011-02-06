@@ -26,6 +26,7 @@
 
 #ifndef USE_PCH
 #include <endian.h>
+#include <stdint.h>
 #endif
 
 // Convert the size of a linked list to it's 'size class':

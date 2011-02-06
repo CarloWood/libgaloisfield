@@ -89,4 +89,7 @@ std::ostream& operator<<(std::ostream& os, std::map<T1, T2, T3> const& data)
 template<unsigned int max_degree> class PolynomialOverZ2;
 std::ostream& operator<<(std::ostream& os, PolynomialOverZ2<max_degree> const& polynomial);
 
+class GFElement;
+std::ostream& operator<<(std::ostream& os, GFElement const& field_element);
+
 #endif // DEBUG_OSTREAM_OPERATORS_H

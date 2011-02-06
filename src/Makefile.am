@@ -2,28 +2,39 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = . include
+SUBDIRS = . include tests
 
 EXTRA_DIST = pch-source.h ${BUILT_SOURCES}
 
 lib_LTLIBRARIES = libgaloisfield.la
 VERSIONINFO = @VERSIONINFO@
 INCLUDES = -I$(top_builddir)/include -I$(srcdir)/include
-BUILT_SOURCES =
+BUILT_SOURCES = irreducible_bits.cc factorized.cc
 DEFS = @DEFS@
 CXXFLAGS =
 
 libgaloisfield_la_SOURCES = \
+	GFElement.cc \
+	GaloisField.cc \
 	Prime.cc \
-	irreducible_bits.cc \
 	debug_ostream_operators.h \
 	debug_ostream_operators.cc \
 	debug.h \
-	debug.cc
+	debug.cc \
+	${BUILT_SOURCES}
 
 libgaloisfield_la_CXXFLAGS = @CXXFLAGS@ @CWD_FLAGS@
 libgaloisfield_la_LIBADD = @LIBS@ @CWD_LIBS@
 libgaloisfield_la_LDFLAGS = -version-info $(VERSIONINFO) -no-undefined
+
+if MAINTAINER_MODE
+bin_PROGRAMS = generate_irreducible_bits generate_factorized
+
+generate_irreducible_bits_SOURCES = generate_irreducible_bits.cc
+generate_factorized_SOURCES = generate_factorized.cc Prime.cc
+generate_irreducible_bits_CXXFLAGS = @CXXFLAGS@
+generate_factorized_CXXFLAGS = @CXXFLAGS@
+endif
 
 if USE_PCH
 @Makefilein@PREVCXXDEPMODE := $(CXXDEPMODE)
@@ -87,13 +98,20 @@ distclean-local:
 	@MAINTAINER_MODE_TRUE@rm -f .all_sources *.s *.ii
 
 clean-local:
+	rm -f core
 if USE_PCH
 	rm -f pch.h.gch/* $(DEPDIR)/pch.*po
 endif
 
-MAINTAINERCLEANFILES = $(srcdir)/Makefile.in sys.h tags troep* *.cgd
+MAINTAINERCLEANFILES = $(srcdir)/Makefile.in sys.h $(srcdir)/irreducible_bits.cc $(srcdir)/factorized.cc tags troep* *.cgd
 
 if MAINTAINER_MODE
+$(srcdir)/irreducible_bits.cc: generate_irreducible_bits
+	./generate_irreducible_bits ~/projects/libecc/libecc > $(srcdir)/irreducible_bits.cc
+
+$(srcdir)/factorized.cc: generate_factorized
+	./generate_factorized > $(srcdir)/factorized.cc
+
 # Usage: You have to set the CTAGS_ROOT_SRCDIRS environment variable yourself,
 # for example: export CTAGS_ROOT_SRCDIRS="/usr/src/gtk/glib-current /usr/src/gtk/gtk+-current"
 # Then run 'vim -u /some/path/.vimrc' where the .vimrc is the normal .vimrc, but with the

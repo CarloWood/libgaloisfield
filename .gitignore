@@ -12,3 +12,5 @@ autom4te.cache
 aclocal.m4
 Makefile.in
 Makefile
+irreducible_bits.cc
+factorized.cc
